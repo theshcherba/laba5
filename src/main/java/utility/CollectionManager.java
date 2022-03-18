@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.NavigableSet;
 
-    public static class CollectionManager {
+    public class CollectionManager {
             private NavigableSet<Person> personCollection = new LinkedHashSet<>();
             private LocalDateTime lastInitTime;
             private LocalDateTime lastSaveTime;
@@ -19,51 +19,54 @@ import java.util.NavigableSet;
 
                 loadCollection();
             }
-        /**
-         * возращает саму коллекцию.
-         */
+            /**
+             * возращает саму коллекцию.
+             */
             public NavigableSet<Person> getCollection() {
                 return personCollection;
             }
-        /**
-         * возращает время последней инициализации или null, если инициализации не было.
-         */
+            /**
+             * возращает время последней инициализации или null, если инициализации не было.
+             */
             public LocalDateTime getLastInitTime() {
                 return lastInitTime;
             }
-        /**
-         * возращает последнее сохранение времени или ноль, если не было сохранения.
-         */
+            /**
+             * возращает последнее сохранение времени или ноль, если не было сохранения.
+             */
             public LocalDateTime getLastSaveTime() {
                 return lastSaveTime;
             }
-        /**
-         * возращает название типа коллекции.
-         */
+            /**
+             * возращает название типа коллекции.
+             */
             public String collectionType() {
                 return personCollection.getClass().getName();
             }
-        /**
-         * возращает зазмер коллекции.
-         */
+            /**
+             * возращает зазмер коллекции.
+             */
             public int collectionSize() {
                 return personCollection.size();
             }
-        /**
-         * возращает первый элемент коллекции или null, если коллекция пуста.
-         */
+            /**
+             * возращает первый элемент коллекции или null, если коллекция пуста.
+             */
             public Person getFirst() {
                 if (personCollection.isEmpty()) return null;
                 return personCollection.first();
             }
-        /**
-         * возращает последний элемент коллекции или null, если коллекция пуста.
-         */
+            /**
+             * возращает последний элемент коллекции или null, если коллекция пуста.
+             */
             public Person getLast() {
                 if (personCollection.isEmpty()) return null;
                 return personCollection.last();
             }
-
+            /**
+             * параметр id персона.
+             * возвращает персона по его идентификатору или null, если персон не найден.
+             */
             public Person getById(Long id) {
                 for (Person person : personCollection) {
                     if (person.getId().equals(id)) return person;
@@ -71,107 +74,70 @@ import java.util.NavigableSet;
                 return null;
             }
 
-            public Person getByValue(Person personToFind) {
-                for (Person person : personCollection) {
-                    if (person.equals(personToFind)) return person;
-                }
-                return null;
-            }
-
-            public double getSumOfHeight() {
-                double sumOfHealth = 0;
-                for (Person person : personCollection) {
-                    sumOfHealth += person.getHeight();
-                }
-                return getSumOfHeight();
-            }
-
-
             /**
-             * @param weaponToFilter Weapon to filter by.
-             * @return Information about valid marines or empty string, if there's no such marines.
+             * Добавляет нового персона в коллекцию.
+             * Добавяет параметр персона.
              */
-            public String weaponFilteredInfo(Weapon weaponToFilter) {
-                String info = "";
-                for (SpaceMarine marine : marinesCollection) {
-                    if (marine.getWeaponType().equals(weaponToFilter)) {
-                        info += marine + "\n\n";
-                    }
-                }
-                return info.trim();
+            public void addToCollection(Person person) {
+                personCollection.add(person);
             }
 
             /**
-             * Adds a new marine to collection.
-             *
-             * @param marine A marine to add.
+             * Удаляет персона из коллекции.
+             * Удаляет параметр персона.
              */
-            public void addToCollection(SpaceMarine marine) {
-                marinesCollection.add(marine);
+            public void removeFromCollection(Person person) {
+                personCollection.remove(person);
             }
 
             /**
-             * Removes a new marine to collection.
-             *
-             * @param marine A marine to remove.
+             * Удаляет персонов меньше, чем заданный.
+             * Параметр personToCompare персона для сравнения.
              */
-            public void removeFromCollection(SpaceMarine marine) {
-                marinesCollection.remove(marine);
+            public void removeLower(Person personToCompare) {
+                personCollection.removeIf(person -> person.compareTo(personToCompare) < 0);
             }
-
             /**
-             * Remove marines greater than the selected one.
-             *
-             * @param marineToCompare A marine to compare with.
-             */
-            public void removeGreater(SpaceMarine marineToCompare) {
-                marinesCollection.removeIf(marine -> marine.compareTo(marineToCompare) > 0);
-            }
-
-            /**
-             * Clears the collection.
+             * Очищает коллекцию.
              */
             public void clearCollection() {
-                marinesCollection.clear();
+                personCollection.clear();
             }
 
             /**
-             * Generates next ID. It will be (the bigger one + 1).
-             *
-             * @return Next ID.
+             * Генерирует следующий идентификатор. Это будет (больший + 1).
+             * Возращает Next ID.
              */
             public Long generateNextId() {
-                if (marinesCollection.isEmpty()) return 1L;
-                return marinesCollection.last().getId() + 1;
+                if (personCollection.isEmpty()) return 1L;
+                return personCollection.last().getId() + 1;
             }
 
             /**
-             * Saves the collection to file.
+             * Сохраняет коллекцию в файл.
              */
             public void saveCollection() {
-                fileManager.writeCollection(marinesCollection);
+                fileManager.writeCollection(personCollection);
                 lastSaveTime = LocalDateTime.now();
             }
 
             /**
-             * Loads the collection from file.
+             * Загружает коллекцию из файла.
              */
             private void loadCollection() {
-                marinesCollection = fileManager.readCollection();
+                personCollection = fileManager.readCollection();
                 lastInitTime = LocalDateTime.now();
             }
 
-            @Override
             public String toString() {
-                if (marinesCollection.isEmpty()) return "Коллекция пуста!";
+                if (personCollection.isEmpty()) return "Коллекция пуста!";
 
                 String info = "";
-                for (SpaceMarine marine : marinesCollection) {
-                    info += marine;
-                    if (marine != marinesCollection.last()) info += "\n\n";
+                for (Person person : personCollection) {
+                    info += person;
+                    if (person != personCollection.last()) info += "\n\n";
                 }
 
             }
-        }
-}
-}
+
+    }
