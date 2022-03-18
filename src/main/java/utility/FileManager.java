@@ -1,9 +1,6 @@
 package utility;
 
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBException;
 import java.io.File;
-import java.io.IOException;
 
 public class FileManager {
     private File file;
@@ -23,6 +20,30 @@ public class FileManager {
 
           //  String result = stringToObject.getObjectCommand(commands).execute(collection);
            // System.out.println(result);
+
+    public static class FileManager {
+        private File file;
+        private String envVariable;
+        private Cat cat;
+
+        public FileManager(File file, String envVariable) {
+            this.envVariable = envVariable;
+            this.file = file;
         }
+
+        public FileManager(File file, Cat cat) {
+            this.file = file;
+            this.cat = cat;
+        }
+
+        public String create() {
+            CollectionXML col = new CollectionXML(cat);
+            VehicleCollection.collection.forEach((k,v) -> col.add(k, new VehicleXML(v)));
+            Serializer serializer = new Persister();
+            serializer.write(col, out);
+            return "filepath";
+        }
+    }
+}
 
 
