@@ -17,7 +17,7 @@ import java.util.NavigableSet;
                 this.lastSaveTime = null;
                 this.fileManager = fileManager;
 
-                loadCollection();
+                loadCollection();//Загружает коллекцию из файла
             }
             /**
              * возращает саму коллекцию.
@@ -44,7 +44,7 @@ import java.util.NavigableSet;
                 return personCollection.getClass().getName();
             }
             /**
-             * возращает зазмер коллекции.
+             * возращает размер коллекции.
              */
             public int collectionSize() {
                 return personCollection.size();
@@ -96,6 +96,13 @@ import java.util.NavigableSet;
              */
             public void removeLower(Person personToCompare) {
                 personCollection.removeIf(person -> person.compareTo(personToCompare) < 0);
+            }
+            /**
+             * Удаляет персонов больше, чем заданный.
+             * Параметр personToCompare персона для сравнения.
+             */
+            public void removeGreater(Person personToCompare) {
+                personCollection.removeIf(person -> person.compareTo(personToCompare) > 0);
             }
             /**
              * Очищает коллекцию.
